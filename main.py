@@ -11,7 +11,7 @@ inventario_ativos = {}
 
 # Criando o Menu Interativo
 
-def exibir_menu():
+while True:
     print("\n---Sistema de Inventário de TI e Vulnerabilidades---")
     print("1. Cadastrar Ativo")
     print("2. Consultar Ativo")
@@ -20,20 +20,33 @@ def exibir_menu():
     print("5. Gerenciar Vulnerabilidades")
     print("0. Sair")
 
-def main():
-    while True:
-        exibir_menu()
-        opcao = input("Escolha uma opção:")
+    opcao = int(input("Escolha uma opção:"))
+    if opcao == "0":
+        print("Programa encerrado.")
+        break
 
-        try:
-            opcao_int = int(opcao)
-            if opcao_int == 1:
-                print("Iniciando cadastro...")
-            elif opcao_int == 0:
-                print("Saindo do sistema...")
-                break
-            else:
-                print("Opção inválida! Escolha um número do menu.")
-        except ValueError:
-            print("Erro: Digite apenas números inteiros válidos.")
+    elif opcao == "1":
+        print("Cadastro de ativo")
+
+    elif opcao == "2":
+        print("Consulta de ativo")
+
+    elif opcao == "3":
+        print("Atualização de ativo")
+
+    elif opcao == "4":
+        print("Remoção de ativo")
+
+    elif opcao == "5":
+        print("Cadastro de vulnerabilidade")
+
+    elif opcao == "6":
+        print("Consulta de vulnerabilidades")
+
+    else:
+        print("Opção inválida.")
+
+   
+        
+
             
