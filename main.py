@@ -151,4 +151,11 @@ def atualizar_ativo():
 def remover_ativo():
     print("\n--- Remover Ativo ---")
     try:
-        id_ativo
+         id_ativo = int(input("Digite o ID do ativo a ser removido:"))
+           
+         if id_ativo in inventario_ativos:  
+            del inventario_ativos[id_ativo] # Remove do dicionário
+            salvar_dados() # Atualiza o arquivo
+            print("Ativo( e suas vulnerabilidades) removido com sucesso!")
+else:
+ print("Erro: Ativo não encontrado.")
