@@ -119,42 +119,36 @@ def consultar_ativo():
         
             if not encontrou:
                 print("Nenhum ativo foi encontrado com esse termo.")
-
-
-
-
-    
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-# Gravando num arquivo de texto
-    
-        
-
-
-        
-   
-        
-
             
+def atualizar_ativo():
+    print("\n--- Atualizar Ativo ---")
+    try:
+        id_ativo = int(input("Digite o ID do ativo que deseja atualizar:"))
+        
+        if id_ativo not in inventario_ativos:
+            print("Erro: Ativo não encontrado no sistema.")
+            return
+    
+    
+        ativo = inventario_ativos[id_ativo]
+        print("Dica: Dica: Deixe o campo em branco e aperte Enter se não quiser alterá-lo.")
+
+        novo_nome = input(f"Nome atual" ({ativo['nome']})).strip()
+        novo_responsavel = input(f"Responsavel atual ({ativo['responsavel']})").strip()
+        novo_setor = input(f"Setor atual ({ativo['setor']}):").strip()
+    
+# Atualiza apenas se o usuário digitou algo
+        if novo_nome: ativo["nome"] = novo_nome
+        if novo_responsavel: ativo["responsavel"] = novo_responsavel
+        if novo_setor: ativo["setor"] = novo_setor
+    
+        salvar_dados()
+        print("Ativo atualizado com sucesso!")
+    
+    except ValueError:
+        print("Erro: O ID deve ser um número inteiro.")
+
+def remover_ativo():
+    print("\n--- Remover Ativo ---")
+    try:
+        id_ativo
