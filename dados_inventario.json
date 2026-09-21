@@ -1,0 +1,14 @@
+{
+    "23": {
+        "nome": " notebook",
+        "responsavel": "Kalil",
+        "setor": " TI",
+        "tipo": "NOTEBOOK",
+        "vulnerabilidades": [
+            {
+                "descricao": " Senha fraca",
+                "severidade": " Baixa"
+            }
+        ]
+    }
+}

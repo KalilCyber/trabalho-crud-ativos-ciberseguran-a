@@ -45,7 +45,16 @@ def cadastrar_ativo():
             return
         
         nome = input("Nome/Hostname:")
-        responsavel = input("Responsável:")
+        while True:
+            responsavel = input("Responsável:").strip()
+            if responsavel.replace(" ", "").isalpha():
+                break
+            else:
+                print("Entrada inválida! Digite apenas letras (sem números ou símbolos). \n")
+
+        print(f"Responsável cadastrado: {responsavel}")
+
+
         setor = input("Setor:")
 
 # Exibindo as opções do Enum
@@ -214,22 +223,22 @@ while True:
 
     
         elif opcao == 1:
-            print("Cadastro de ativo")
+            cadastrar_ativo()
 
         elif opcao == 2:
-            print("Consulta de ativo")
+            consultar_ativo()
 
         elif opcao == 3:
-            print("Atualização de ativo")
+            atualizar_ativo()
 
         elif opcao == 4:
-            print("Remoção de ativo")
+            remover_ativo()
 
         elif opcao == 5:
-            print("Cadastro de vulnerabilidade")
+            cadastrar_vulnerabilidade()
 
         elif opcao == 6:
-            print("Consulta de vulnerabilidades")
+            listar_vulnerabilidades()
 
         else:
             print("Opção inválida! Tente novamente.")
