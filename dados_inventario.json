@@ -11,18 +11,36 @@
             }
         ]
     },
-    "42": {
-        "nome": "Notebook Hentai",
-        "responsavel": "Gabriel",
-        "setor": "Ciberseguran\u00e7a",
-        "tipo": "NOTEBOOK",
-        "vulnerabilidades": []
-    },
     "18": {
         "nome": "notebook -5",
         "responsavel": "Aline",
         "setor": "Ciberseguran\u00e7a",
         "tipo": "NOTEBOOK",
         "vulnerabilidades": []
+    },
+    "77": {
+        "nome": "SERVIDOR",
+        "responsavel": "Gabriel",
+        "setor": "Ciberseguran\u00e7a",
+        "tipo": "SERVIDOR",
+        "vulnerabilidades": [
+            {
+                "descricao": "Sistema operacional desatualizado",
+                "severidade": "M\u00e9dia"
+            }
+        ]
+    },
+    "42": {
+        "nome": "Roteador 01",
+        "responsavel": "Gabriel",
+        "setor": "Ciberseguran\u00e7a",
+        "tipo": "ROTEADOR",
+        "vulnerabilidades": [
+            {
+                "descricao": "Porta 22 aberta",
+                "severidade": "Cr\u00edtica",
+                "status": "ABERTO"
+            }
+        ]
     }
 }

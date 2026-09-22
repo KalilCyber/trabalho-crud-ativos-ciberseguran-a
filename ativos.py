@@ -8,11 +8,29 @@ from enum import Enum
 ARQUIVO_DADOS = "dados_inventario.json"
 
 # Estruturas de Dados Iniciais (Enum)
+
 class TipoAtivo(Enum):
     SERVIDOR = 1
     ROTEADOR = 2
     NOTEBOOK = 3
     APLICAÇÃO_WEB = 4
+
+# Severidade das vulnerabilidades (Enum)
+
+class Severidade(Enum):
+    BAIXA = 1
+    MEDIA = 2
+    ALTA = 3
+    CRITICA = 4
+
+# Tratamento das vulnerabilidades (Enum)
+
+class Tratamento(Enum):
+    ABERTO = 1
+    EM_TRATAMENTO = 2
+    CORRIGIDA = 3
+    ACEITA = 4
+
 
 # Dicionário principal
 
@@ -28,8 +46,11 @@ def carregar_dados():
     global inventario_ativos
     try:
         with open(ARQUIVO_DADOS, 'r') as f:
-            # Carrega os dados do arquivo JSON para o dicionário
-            inventario_ativos = json.load(f)
+            # Carrega os dados do arquivo JSON
+            dados_brutos = json.load(f)
+            # Converte todas a chaves (IDS) de string de volta para inteiros
+            inventario_ativos = {int(id_str): dados for id_str, dados in dados_brutos.items()}
+    
     except FileNotFoundError:
         inventario_ativos = {}
 
@@ -158,7 +179,7 @@ def remover_ativo():
     else:
         messagebox.showerror("Erro", "Ativo não encontrado.")
 
-# Requisito 7: Gerenciar Vulnerabilidades
+# Requisito 7: Cadastrar vulnerabilidades
 
 def cadastrar_vulnerabilidade():
     id_ativo = simpledialog.askinteger("Cadastrar Vulnerabilidade", "Digite o ID do ativo:")
@@ -171,12 +192,31 @@ def cadastrar_vulnerabilidade():
     descricao = simpledialog.askstring("Vulnerabilidade", "Descrição da vulnerabilidade:")
     if not descricao: return
     
-    severidade = simpledialog.askstring("Vulnerabilidade", "Severidade (Baixa, Média, Alta):")
+    severidade = simpledialog.askstring("Vulnerabilidade", "Severidade (Baixa, Média, Alta, Crítica):")
     if not severidade: return
+
+# Exibindo as opções do Enum Tratamento
+    
+    opcoes_status = "Status disponíveis:\n"
+    for status in Tratamento:
+        opcoes_status += f"{status.value} - {status.name}\n"
+    
+
+    codigo_status = simpledialog.askinteger("Vulnerabilidade", f"{opcoes_status}\nEscolha o código do status:")
+    if codigo_status is None: return
+
+    try:
+        status_selecionado = Tratamento(codigo_status).name
+    except ValueError:
+        messagebox.showerror("Erro", "Código de status inválido.")
+        return
+    
+# Salvando no dicionário com o novo campo "status"
     
     inventario_ativos[id_ativo]["vulnerabilidades"].append({
         "descricao": descricao,
-        "severidade": severidade
+        "severidade": severidade,
+        "status": status_selecionado
     })
     
     salvar_dados()
@@ -200,7 +240,9 @@ def listar_vulnerabilidades():
         
     resultado = f"Vulnerabilidades do Ativo [ID: {id_ativo}] - {inventario_ativos[id_ativo]['nome']}:\n\n"
     for idx, vuln in enumerate(vulnerabilidades, start=1):
-        resultado += f"{idx}. Descrição: {vuln['descricao']}\n   Severidade: {vuln['severidade']}\n\n"
+        # Usa .get() para evitar erro com dados antigos do JSON
+        status_atual = vuln.get('status', 'NÃO INFORMADO')
+        resultado += f"{idx}. Descrição: {vuln['descricao']}\n   Severidade: {vuln['severidade']}\n\n Status: {status_atual}\n\n"
         
     messagebox.showinfo("Vulnerabilidades", resultado)
 
