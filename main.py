@@ -1,4 +1,6 @@
 import json
+import tkinter as tk
+from tkinter import messagebox, simpledialog
 from enum import Enum
 
 # Configuração de Arquivo
@@ -31,43 +33,54 @@ def carregar_dados():
     except FileNotFoundError:
         inventario_ativos = {}
 
+
 # Módulos de Funcionalidade
 
 # Requisito 3: Cadastrar Ativo
 
 def cadastrar_ativo():
-    print("\n --- Novo Cadastro ---")
-    try:
-        id_ativo = int(input("Digite o ID único do ativo (apenas números):"))
-
-        if id_ativo in inventario_ativos:
-            print("Erro: ID já existe no sistema.")
-            return
+    id_ativo = simpledialog.askinteger("Novo Cadastro", "Digite o ID único do ativo (apenas números):")
+    if id_ativo is None: return # O usuário cancelou
+    
+    if id_ativo in inventario_ativos:
+        messagebox.showerror("Erro", "ID já existe no sistema.")
+        return
+    
+    nome = simpledialog.askstring("Novo Cadastro", "Nome/Hostname:")
+    if not nome: return
+    
+    responsavel = ""
+    while True:
+        resp = simpledialog.askstring("Novo Cadastro", "Responsável:")
+        if not resp: return
         
-        nome = input("Nome/Hostname:")
-        while True:
-            responsavel = input("Responsável:").strip()
-            if responsavel.replace(" ", "").isalpha():
-                break
-            else:
-                print("Entrada inválida! Digite apenas letras (sem números ou símbolos). \n")
-
-        print(f"Responsável cadastrado: {responsavel}")
-
-
-        setor = input("Setor:")
+        if resp.strip().replace(" ", "").isalpha():
+            responsavel = resp.strip()
+            break
+        else:
+            messagebox.showwarning("Aviso", "Entrada inválida! Digite apenas letras.")
+            
+    setor = simpledialog.askstring("Novo Cadastro", "Setor:")
+    if not setor: return          
+       
+       
 
 # Exibindo as opções do Enum
-        print("Tipos disponiveis:")
-        for tipo in TipoAtivo:
-            print(f"{tipo.value} - {tipo.name}")
-        
-        codigo_tipo = int(input("Escolha o código do tipo de ativo:"))
+    opcoes_tipo = "Tipos disponíveis:\n"
+    for tipo in TipoAtivo:
+        opcoes_tipo += f"{tipo.value} - {tipo.name}\n"
+    
+    codigo_tipo = simpledialog.askinteger("Novo Cadastro", f"{opcoes_tipo}\nEscolha o código do tipo de ativo:")
+    if codigo_tipo is None: return
+    
+    try:
         tipo_selecionado = TipoAtivo(codigo_tipo).name
-
+    except ValueError:
+        messagebox.showerror("Erro", "Código de tipo inválido.")
+        return
 # Salvando no dicionário com a lista de vulns inicial
         
-        inventario_ativos[id_ativo] = {
+    inventario_ativos[id_ativo] = {
         "nome": nome,
         "responsavel": responsavel,
         "setor": setor,
@@ -75,177 +88,150 @@ def cadastrar_ativo():
         "vulnerabilidades": []
         }
 
-        salvar_dados()
-        print("Ativo cadastrado com sucesso!")
-
-    except ValueError:
-        print("Erro: Entrada inválida. Por favor, digite números onde for solicitado.")
+    salvar_dados()
+    messagebox.showinfo("Sucesso", "Ativo cadastrado com sucesso!")
 
 # Requisito 4: Consultar Ativo
 
 def consultar_ativo():
-        print("\n--- Consultar Ativo ---")
-        termo = input("Digite o ID ou o Nome do ativo para buscar:").strip().lower()
-        encontrou = False
+    termo = simpledialog.askstring("Consultar Ativo", "Digite o ID ou o Nome do ativo para buscar:")
+    if not termo: return
+    termo = termo.strip().lower()
 
 # Percorre todo o dicionário procurando correspondência
 
-        for id_ativo, dados in inventario_ativos.items():
-            if termo == str(id_ativo) or termo in dados["nome"].lower():
-                print(f"\n[ID: {id_ativo}]")
-                print(f"Nome/Hostname: {dados['nome']}")
-                print(f"Responsavel: {dados['responsavel']}")
-                print(f"Setor/Localização: {dados['setor']}")
-                print(f"Tipo: {dados['tipo']}")
-                print(f"Quantidade de vulnerabilidades: {len(dados['vulnerabilidades'])}")
-                encontrou = True
-        
-        if not encontrou:
-            print("Nenhum ativo foi encontrado com esse termo.")
+    resultados = ""
+    for id_ativo, dados in inventario_ativos.items():
+        if termo == str(id_ativo) or termo in dados["nome"].lower():
+            resultados += f"ID: {id_ativo}\n"
+            resultados += f"Nome/Hostname: {dados['nome']}\n"
+            resultados += f"Responsável: {dados['responsavel']}\n"
+            resultados += f"Setor: {dados['setor']}\n"
+            resultados += f"Tipo: {dados['tipo']}\n"
+            resultados += f"Qtd Vulnerabilidades: {len(dados['vulnerabilidades'])}\n"
+            resultados += "-" * 20 + "\n"
+            
+    if resultados:
+        messagebox.showinfo("Resultados da Busca", resultados)
+    else:
+        messagebox.showwarning("Aviso", "Nenhum ativo foi encontrado com esse termo.")
             
 # Requisito 5: Atualizar Ativo
 
 def atualizar_ativo():
-    print("\n--- Atualizar Ativo ---")
-    try:
-        id_ativo = int(input("Digite o ID do ativo que deseja atualizar:"))
-        
-        if id_ativo not in inventario_ativos:
-            print("Erro: Ativo não encontrado no sistema.")
-            return
+    id_ativo = simpledialog.askinteger("Atualizar Ativo", "Digite o ID do ativo que deseja atualizar:")
+    if id_ativo is None: return
+    
+    if id_ativo not in inventario_ativos:
+        messagebox.showerror("Erro", "Ativo não encontrado no sistema.")
+        return
     
     
-        ativo = inventario_ativos[id_ativo]
-        print("Dica: Dica: Deixe o campo em branco e aperte Enter se não quiser alterá-lo.")
+    ativo = inventario_ativos[id_ativo]
+    
+    novo_nome = simpledialog.askstring("Atualizar Ativo", f"Nome atual ({ativo['nome']}):\n(Cancele ou deixe em branco para manter)")
+    if novo_nome: ativo["nome"] = novo_nome.strip()
+    
+    novo_responsavel = simpledialog.askstring("Atualizar Ativo", f"Responsável atual ({ativo['responsavel']}):")
+    if novo_responsavel: ativo["responsavel"] = novo_responsavel.strip()
+    
+    novo_setor = simpledialog.askstring("Atualizar Ativo", f"Setor atual ({ativo['setor']}):")
+    if novo_setor: ativo["setor"] = novo_setor.strip()
 
-        novo_nome = input(f"Nome atual ({ativo['nome']}):").strip()
-        novo_responsavel = input(f"Responsavel atual ({ativo['responsavel']})").strip()
-        novo_setor = input(f"Setor atual ({ativo['setor']}):").strip()
-    
-# Atualiza apenas se o usuário digitou algo
-        if novo_nome: ativo["nome"] = novo_nome
-        if novo_responsavel: ativo["responsavel"] = novo_responsavel
-        if novo_setor: ativo["setor"] = novo_setor
-    
-        salvar_dados()
-        print("Ativo atualizado com sucesso!")
-    
-    except ValueError:
-        print("Erro: O ID deve ser um número inteiro.")
+    salvar_dados()
+    messagebox.showinfo("Sucesso", "Ativo atualizado com sucesso!") 
 
 # Requisito 6: Remover Ativo
 
+
 def remover_ativo():
-    print("\n--- Remover Ativo ---")
-    try:
-        id_ativo = int(input("Digite o ID do ativo a ser removido:"))
-           
-        if id_ativo in inventario_ativos:  
-            del inventario_ativos[id_ativo] # Remove do dicionário
-            salvar_dados() # Atualiza o arquivo
-            print("Ativo( e suas vulnerabilidades) removido com sucesso!")
-        else:
-            print("Erro: Ativo não encontrado.")
-    except ValueError:
-        print("Erro: O ID deve ser um número inteiro.")
+    id_ativo = simpledialog.askinteger("Remover Ativo", "Digite o ID do ativo a ser removido:")
+    if id_ativo is None: return
+    
+    if id_ativo in inventario_ativos:
+        # Pede confirmação antes de apagar
+        resposta = messagebox.askyesno("Confirmar", f"Tem certeza que deseja remover o ativo {id_ativo}?")
+        if resposta:
+            del inventario_ativos[id_ativo]
+            salvar_dados()
+            messagebox.showinfo("Sucesso", "Ativo removido com sucesso!")
+    else:
+        messagebox.showerror("Erro", "Ativo não encontrado.")
 
 # Requisito 7: Gerenciar Vulnerabilidades
 
 def cadastrar_vulnerabilidade():
-    print("\n--- Cadastrar Vulnerabilidade ---")
-    try:
-        id_ativo = int(input("Digite o ID do ativo para cadastrar a vulnerabilidade:"))
-        
-        if id_ativo not in inventario_ativos:
-            print("Erro: Ativo não encontrado no sistema.")
-            return
-        
-        descricao = input("Descrição da vulnerabilidade:")
-        severidade = input("Severidade (Baixa, Média, Alta):")
-        
-        # Adiciona a vulnerabilidade à lista do ativo
-        inventario_ativos[id_ativo]["vulnerabilidades"].append({
-            "descricao": descricao,
-            "severidade": severidade
-        })
-        
-        salvar_dados()
-        print("Vulnerabilidade cadastrada com sucesso!")
+    id_ativo = simpledialog.askinteger("Cadastrar Vulnerabilidade", "Digite o ID do ativo:")
+    if id_ativo is None: return
     
-    except ValueError:
-        print("Erro: O ID deve ser um número inteiro.")
+    if id_ativo not in inventario_ativos:
+        messagebox.showerror("Erro", "Ativo não encontrado no sistema.")
+        return
+        
+    descricao = simpledialog.askstring("Vulnerabilidade", "Descrição da vulnerabilidade:")
+    if not descricao: return
+    
+    severidade = simpledialog.askstring("Vulnerabilidade", "Severidade (Baixa, Média, Alta):")
+    if not severidade: return
+    
+    inventario_ativos[id_ativo]["vulnerabilidades"].append({
+        "descricao": descricao,
+        "severidade": severidade
+    })
+    
+    salvar_dados()
+    messagebox.showinfo("Sucesso", "Vulnerabilidade cadastrada com sucesso!")
 
 # Requisito 8: Visualizar Vulnerabilidades de um Ativo
 
 def listar_vulnerabilidades():
-    print("\n--- Consultar Vulnerabilidades de um Ativo ---")
-    try:
-        id_ativo = int(input("Digite o ID do ativo para consultar suas vulnerabilidades:"))
-        
-        if id_ativo not in inventario_ativos:
-            print("Erro: Ativo não encontrado no sistema.")
-            return
-        
-        vulnerabilidades = inventario_ativos[id_ativo]["vulnerabilidades"]
-        
-        if not vulnerabilidades:
-            print("Nenhuma vulnerabilidade cadastrada para este ativo.")
-            return
-        
-        print(f"\nVulnerabilidades do Ativo [ID: {id_ativo}] - {inventario_ativos[id_ativo]['nome']}:")
-        for idx, vuln in enumerate(vulnerabilidades, start=1):
-            print(f"{idx}. Descrição: {vuln['descricao']} , Severidade: {vuln['severidade']}")
+    id_ativo = simpledialog.askinteger("Listar Vulnerabilidades", "Digite o ID do ativo:")
+    if id_ativo is None: return
     
-    except ValueError:
-        print("Erro: O ID deve ser um número inteiro.")
-
-
-# Criando o Menu Interativo
-
-def menu():
-    carregar_dados()  # Carrega os dados do arquivo ao iniciar o programa
-
-while True:
-    print("\n---Sistema de Inventário de TI e Vulnerabilidades---")
-    print("1. Cadastrar Ativo")
-    print("2. Consultar Ativo")
-    print("3. Atualizar Ativo")
-    print("4. Remover Ativo")
-    print("5. Cadastrar Vulnerabilidade")
-    print("6. Consultar Vulnerabilidades de um Ativo")
-    print("0. Sair")
-
-    try:
-        opcao = int(input("Escolha uma opção:"))
-        if opcao == 0:
-            print("Programa encerrado.")
-            break
-
+    if id_ativo not in inventario_ativos:
+        messagebox.showerror("Erro", "Ativo não encontrado no sistema.")
+        return
+        
+    vulnerabilidades = inventario_ativos[id_ativo]["vulnerabilidades"]
     
-        elif opcao == 1:
-            cadastrar_ativo()
+    if not vulnerabilidades:
+        messagebox.showinfo("Vulnerabilidades", "Nenhuma vulnerabilidade cadastrada para este ativo.")
+        return
+        
+    resultado = f"Vulnerabilidades do Ativo [ID: {id_ativo}] - {inventario_ativos[id_ativo]['nome']}:\n\n"
+    for idx, vuln in enumerate(vulnerabilidades, start=1):
+        resultado += f"{idx}. Descrição: {vuln['descricao']}\n   Severidade: {vuln['severidade']}\n\n"
+        
+    messagebox.showinfo("Vulnerabilidades", resultado)
 
-        elif opcao == 2:
-            consultar_ativo()
 
-        elif opcao == 3:
-            atualizar_ativo()
+# Interface Gráfica Principal (Menu)
 
-        elif opcao == 4:
-            remover_ativo()
-
-        elif opcao == 5:
-            cadastrar_vulnerabilidade()
-
-        elif opcao == 6:
-            listar_vulnerabilidades()
-
-        else:
-            print("Opção inválida! Tente novamente.")
-
-    except ValueError:
-     print("Erro: Por favor, digite um número válido.")
-
+def iniciar_gui():
+    carregar_dados()  # Carrega os dados antes de abrir a janela
+    
+    janela = tk.Tk()
+    janela.title("Sistema de Inventário de TI")
+    janela.geometry("450x450")
+    
+    # Título
+    titulo = tk.Label(janela, text="Inventário de TI e Vulnerabilidades", font=("Arial", 14, "bold"))
+    titulo.pack(pady=20)
+    
+    # Botões do Menu
+    estilo_botao = {"width": 35, "pady": 5, "bg": "#f0f0f0"}
+    
+    tk.Button(janela, text="1. Cadastrar Ativo", command=cadastrar_ativo, **estilo_botao).pack(pady=5)
+    tk.Button(janela, text="2. Consultar Ativo", command=consultar_ativo, **estilo_botao).pack(pady=5)
+    tk.Button(janela, text="3. Atualizar Ativo", command=atualizar_ativo, **estilo_botao).pack(pady=5)
+    tk.Button(janela, text="4. Remover Ativo", command=remover_ativo, **estilo_botao).pack(pady=5)
+    tk.Button(janela, text="5. Cadastrar Vulnerabilidade", command=cadastrar_vulnerabilidade, **estilo_botao).pack(pady=5)
+    tk.Button(janela, text="6. Consultar Vulnerabilidades de um Ativo", command=listar_vulnerabilidades, **estilo_botao).pack(pady=5)
+    
+    # Botão de sair
+    tk.Button(janela, text="0. Sair", command=janela.quit, width=20, bg="#ffcccc").pack(pady=30)
+    
+    janela.mainloop()
 
 if __name__ == "__main__":
-    menu()
+    iniciar_gui()

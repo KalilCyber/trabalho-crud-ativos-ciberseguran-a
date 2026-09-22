@@ -10,5 +10,19 @@
                 "severidade": " Baixa"
             }
         ]
+    },
+    "42": {
+        "nome": "Notebook Hentai",
+        "responsavel": "Gabriel",
+        "setor": "Ciberseguran\u00e7a",
+        "tipo": "NOTEBOOK",
+        "vulnerabilidades": []
+    },
+    "18": {
+        "nome": "notebook -5",
+        "responsavel": "Aline",
+        "setor": "Ciberseguran\u00e7a",
+        "tipo": "NOTEBOOK",
+        "vulnerabilidades": []
     }
 }
