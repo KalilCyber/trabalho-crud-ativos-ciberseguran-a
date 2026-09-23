@@ -23,7 +23,7 @@ class Severidade(Enum):
 class Tratamento(Enum):
     ABERTO = 1
     EM_TRATAMENTO = 2
-    CORRIGIDA = 3
+    CORRIGIDA = 3 
     ACEITA = 4
 
 # Dicionário principal
@@ -41,7 +41,9 @@ def carregar_dados():
     try:
         with open(ARQUIVO_DADOS, 'r') as f:
             # Carrega os dados do arquivo JSON para o dicionário
-            inventario_ativos = json.load(f)
+            dados_brutos = json.load(f)
+            # Converte todas as chaves (IDS) de string de voltar para inteiros
+            inventario_ativos = {int(id_str): dados for id_str, dados in dados_brutos.items()}
     except FileNotFoundError:
         inventario_ativos = {}
 
@@ -52,7 +54,7 @@ def carregar_dados():
 def cadastrar_ativo():
     print("\n --- Novo Cadastro ---")
     try:
-        id_ativo = int(input("Digite o ID único do ativo (apenas números):"))
+        id_ativo = int(input("\nDigite o ID único do ativo (apenas números):"))
 
         if id_ativo in inventario_ativos:
             print("Erro: ID já existe no sistema.")
@@ -72,7 +74,7 @@ def cadastrar_ativo():
         setor = input("Setor:")
 
 # Exibindo as opções do Enum
-        print("Tipos disponiveis:")
+        print("\nTipos disponiveis:")
         for tipo in TipoAtivo:
             print(f"{tipo.value} - {tipo.name}")
         
@@ -175,14 +177,16 @@ def cadastrar_vulnerabilidade():
             return
         
     descricao = input("Descrição da vulnerabilidade:")
+    categoria = input("Digite o categoria/tipo da vulnerabilidade:")
     severidade = input("Severidade (Baixa, Média, Alta, Crítica):")
+
         
     try:
              # Usando o Enum para Severidade
         print("\nNíveis de Severidade:")
         for s in Severidade:
             print(f"{s.value} - {s.name}")
-        cod_sev = int(input("Escolha o código da severidade: "))
+        cod_sev = int(input("Escolha o código da severidade: ")) 
         severidade = Severidade(cod_sev).name
         
         # Usando o Enum para Status de Tratamento
@@ -199,6 +203,7 @@ def cadastrar_vulnerabilidade():
     # Adiciona a vulnerabilidade à lista do ativo
     inventario_ativos[id_ativo]["vulnerabilidades"].append({
         "descricao": descricao,
+        "categoria":  categoria, 
         "severidade": severidade,
         "status": status
     })
@@ -225,7 +230,7 @@ def listar_vulnerabilidades():
         
         print(f"\nVulnerabilidades do Ativo [ID: {id_ativo}] - {inventario_ativos[id_ativo]['nome']}:")
         for idx, vuln in enumerate(vulnerabilidades, start=1):
-            print(f"{idx}. Descrição: {vuln['descricao']} , Severidade: {vuln['severidade']} , Status de Tratamento: {vuln['status']}\n")
+            print(f"{idx}. Descrição: {vuln['descricao']} , Categoria: {vuln['categoria']} , Severidade: {vuln['severidade']} , Status de Tratamento: {vuln['status']}\n")
             
     
     except ValueError:
@@ -237,46 +242,46 @@ def listar_vulnerabilidades():
 def menu():
     carregar_dados()  # Carrega os dados do arquivo ao iniciar o programa
 
-while True:
-    print("\n---Sistema de Inventário de TI e Vulnerabilidades---")
-    print("1. Cadastrar Ativo")
-    print("2. Consultar Ativo")
-    print("3. Atualizar Ativo")
-    print("4. Remover Ativo")
-    print("5. Cadastrar Vulnerabilidade")
-    print("6. Consultar Vulnerabilidades de um Ativo")
-    print("0. Sair")
+    while True:
+        print("\n--- Sistema de Inventário de TI e Vulnerabilidades ---")
+        print("1. Cadastrar Ativo")
+        print("2. Consultar Ativo")
+        print("3. Atualizar Ativo")
+        print("4. Remover Ativo")
+        print("5. Cadastrar Vulnerabilidade")
+        print("6. Consultar Vulnerabilidades de um Ativo")
+        print("0. Sair")
 
-    try:
-        opcao = int(input("Escolha uma opção:"))
-        if opcao == 0:
-            print("Programa encerrado.")
-            break
+        try:
+            opcao = int(input("\nEscolha uma opção: "))
+            if opcao == 0:
+                print("Programa encerrado.")
+                break
 
-    
-        elif opcao == 1:
-            cadastrar_ativo()
+        
+            elif opcao == 1:
+                cadastrar_ativo()
 
-        elif opcao == 2:
-            consultar_ativo()
+            elif opcao == 2:
+                consultar_ativo()
 
-        elif opcao == 3:
-            atualizar_ativo()
+            elif opcao == 3:
+                atualizar_ativo()
 
-        elif opcao == 4:
-            remover_ativo()
+            elif opcao == 4:
+                remover_ativo()
 
-        elif opcao == 5:
-            cadastrar_vulnerabilidade()
+            elif opcao == 5:
+                cadastrar_vulnerabilidade()
 
-        elif opcao == 6:
-            listar_vulnerabilidades()
+            elif opcao == 6:
+                listar_vulnerabilidades()
 
-        else:
-            print("Opção inválida! Tente novamente.")
+            else:
+                print("Opção inválida! Tente novamente.")
 
-    except ValueError:
-     print("Erro: Por favor, digite um número válido.")
+        except ValueError:
+            print("Erro: Por favor, digite um número válido.")
 
 
 if __name__ == "__main__":
