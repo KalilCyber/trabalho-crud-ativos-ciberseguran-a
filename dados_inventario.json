@@ -1,14 +1,9 @@
 {
-    "23": {
-        "nome": " notebook",
+    "42": {
+        "nome": " Notebook",
         "responsavel": "Kalil",
-        "setor": " TI",
+        "setor": " Ciberseguran\u00e7a",
         "tipo": "NOTEBOOK",
-        "vulnerabilidades": [
-            {
-                "descricao": " Senha fraca",
-                "severidade": " Baixa"
-            }
-        ]
+        "vulnerabilidades": []
     }
 }

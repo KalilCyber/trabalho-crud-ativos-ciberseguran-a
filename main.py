@@ -1,4 +1,4 @@
-import json
+import json 
 from enum import Enum
 
 # Configuração de Arquivo
@@ -11,6 +11,20 @@ class TipoAtivo(Enum):
     ROTEADOR = 2
     NOTEBOOK = 3
     APLICAÇÃO_WEB = 4
+
+# Severidade das vulnerabilidades (Enum)
+class Severidade(Enum):
+    BAIXA = 1
+    MEDIA = 2
+    ALTA = 3
+    CRITICA = 4
+
+# Tratamento das vulnerabilidades (Enum)
+class Tratamento(Enum):
+    ABERTO = 1
+    EM_TRATAMENTO = 2
+    CORRIGIDA = 3
+    ACEITA = 4
 
 # Dicionário principal
 
@@ -149,31 +163,48 @@ def remover_ativo():
     except ValueError:
         print("Erro: O ID deve ser um número inteiro.")
 
-# Requisito 7: Gerenciar Vulnerabilidades
+# Requisito 7: Cadastrar Vulnerabilidades
 
 def cadastrar_vulnerabilidade():
     print("\n--- Cadastrar Vulnerabilidade ---")
-    try:
-        id_ativo = int(input("Digite o ID do ativo para cadastrar a vulnerabilidade:"))
+    
+    id_ativo = int(input("Digite o ID do ativo para cadastrar a vulnerabilidade:"))
         
-        if id_ativo not in inventario_ativos:
+    if id_ativo not in inventario_ativos:
             print("Erro: Ativo não encontrado no sistema.")
             return
         
-        descricao = input("Descrição da vulnerabilidade:")
-        severidade = input("Severidade (Baixa, Média, Alta):")
+    descricao = input("Descrição da vulnerabilidade:")
+    severidade = input("Severidade (Baixa, Média, Alta):")
         
-        # Adiciona a vulnerabilidade à lista do ativo
-        inventario_ativos[id_ativo]["vulnerabilidades"].append({
-            "descricao": descricao,
-            "severidade": severidade
-        })
+    try:
+             # Usando o Enum para Severidade
+        print("\nNíveis de Severidade:")
+        for s in Severidade:
+            print(f"{s.value} - {s.name}")
+        cod_sev = int(input("Escolha o código da severidade: "))
+        severidade = Severidade(cod_sev).name
         
-        salvar_dados()
-        print("Vulnerabilidade cadastrada com sucesso!")
-    
+        # Usando o Enum para Status de Tratamento
+        print("\nStatus de Tratamento:")
+        for t in Tratamento:
+            print(f"{t.value} - {t.name}")
+        cod_status = int(input("Escolha o código do status: "))
+        status = Tratamento(cod_status).name
+        
     except ValueError:
-        print("Erro: O ID deve ser um número inteiro.")
+        print("Erro: Código inválido. Cadastro de vulnerabilidade cancelado.")
+        return
+    
+    # Adiciona a vulnerabilidade à lista do ativo
+    inventario_ativos[id_ativo]["vulnerabilidades"].append({
+        "descricao": descricao,
+        "severidade": severidade,
+        "status": status
+    })
+    
+    salvar_dados()
+    print("Vulnerabilidade cadastrada com sucesso!")
 
 # Requisito 8: Visualizar Vulnerabilidades de um Ativo
 
@@ -194,7 +225,8 @@ def listar_vulnerabilidades():
         
         print(f"\nVulnerabilidades do Ativo [ID: {id_ativo}] - {inventario_ativos[id_ativo]['nome']}:")
         for idx, vuln in enumerate(vulnerabilidades, start=1):
-            print(f"{idx}. Descrição: {vuln['descricao']} , Severidade: {vuln['severidade']}")
+            print(f"{idx}. Descrição: {vuln['descricao']} , Severidade: {vuln['severidade']} , Status de Tratamento: {vuln['status']}\n")
+            
     
     except ValueError:
         print("Erro: O ID deve ser um número inteiro.")
