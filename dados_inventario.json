@@ -42,5 +42,18 @@
                 "status": "ABERTO"
             }
         ]
+    },
+    "67": {
+        "nome": "Notebook",
+        "responsavel": "Nara",
+        "setor": "Desenvolvimento Mobile",
+        "tipo": "NOTEBOOK",
+        "vulnerabilidades": [
+            {
+                "descricao": "Cross-Site Scripting (XSS) Armazenado",
+                "severidade": "M\u00e9dia",
+                "status": "EM_TRATAMENTO"
+            }
+        ]
     }
 }
