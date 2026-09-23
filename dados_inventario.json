@@ -1,13 +1,14 @@
 {
-    "23": {
-        "nome": " notebook",
-        "responsavel": "Kalil",
-        "setor": " TI",
-        "tipo": "NOTEBOOK",
+    "14": {
+        "nome": " Servidor",
+        "responsavel": "Fabiano",
+        "setor": " Ciberseguran\u00e7a",
+        "tipo": "SERVIDOR",
         "vulnerabilidades": [
             {
                 "descricao": " Senha fraca",
-                "severidade": " Baixa"
+                "severidade": "BAIXA",
+                "status": "CORRIGIDA"
             }
         ]
     }
