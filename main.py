@@ -17,7 +17,7 @@ class Severidade(Enum):
     BAIXA = 1
     MEDIA = 2
     ALTA = 3
-    CRITICA = 4
+    CRITICA = 4 
 
 # Tratamento das vulnerabilidades (Enum)
 class Tratamento(Enum):
@@ -175,7 +175,7 @@ def cadastrar_vulnerabilidade():
             return
         
     descricao = input("Descrição da vulnerabilidade:")
-    severidade = input("Severidade (Baixa, Média, Alta):")
+    severidade = input("Severidade (Baixa, Média, Alta, Crítica):")
         
     try:
              # Usando o Enum para Severidade
