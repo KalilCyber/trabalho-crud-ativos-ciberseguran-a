@@ -87,7 +87,7 @@ def atualizar_ativo():
     
     
         ativo = inventario_ativos[id_ativo]
-        print("Dica: Dica: Deixe o campo em branco e aperte Enter se não quiser alterá-lo.")
+        print("Dica: Deixe o campo em branco e aperte Enter se não quiser alterá-lo.")
 
         novo_nome = input(f"Nome atual ({ativo['nome']}):").strip()
         novo_responsavel = input(f"Responsavel atual ({ativo['responsavel']})").strip()
