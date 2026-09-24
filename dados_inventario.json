@@ -6,7 +6,7 @@
         "tipo": "SERVIDOR",
         "vulnerabilidades": [
             {
-                "descricao": " O usuário utilizou uma senha que não utiliza caracteres especiais ou números",
+                "descricao": " O usu\u00c3\u00a1rio utilizou uma senha que n\u00c3\u00a3o utiliza caracteres especiais ou n\u00c3\u00bameros",
                 "categoria": " Senha fraca",
                 "severidade": "BAIXA",
                 "status": "CORRIGIDA"
